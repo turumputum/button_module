@@ -29,7 +29,7 @@ OPT = -Og -g1
 # paths
 #######################################
 # Build path
-BUILD_DIR = .build
+BUILD_DIR = .build/debug
 
 ######################################
 # source
@@ -275,23 +275,23 @@ OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
-	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+	@$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@ ; echo CC    $@
 
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
-	$(AS) -c $(CFLAGS) $< -o $@
+	@$(AS) -c $(CFLAGS) $< -o $@ ; echo AS    $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
-	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
-	$(SZ) $@
+	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@ ; echo LD    $@
+	@$(SZ) $@ ; echo SZ    $@
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(HEX) $< $@
+	@$(HEX) $< $@ ; echo HEX   $@
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(BIN) $< $@	
+	@$(BIN) $< $@ ; echo BIN   $@
 	
 $(BUILD_DIR):
-	mkdir $@		
+	@mkdir $@ ; echo MKDIR $@
 
 #######################################
 # clean up

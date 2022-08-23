@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    //"cortex-debug.stutilPath" : "${env:HOME}/opt/arm/stlink/stlink/build/Release/src/gdbserver",
+    "configurations":
+    [
+        {
+            "name": "swd",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "servertype": "openocd",
+            "executable": ".build/debug/${config:my_binary_name}.elf",
+            "svdFile": "${workspaceFolder}/../../../arsenal/svd/STMicro/${config:my_svd_name}.svd",
+            "preLaunchTask": "build debug",
+            "configFiles": [
+                "${workspaceFolder}/../../../arsenal/openocd/stm32f4-default.cfg"
+            ]
+        },
+    ]
+}

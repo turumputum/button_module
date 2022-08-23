@@ -1,0 +1,26 @@
+{
+    "makefile.extensionOutputFolder": "./.vscode",
+
+    "my_binary_name": "gestureSensor",
+    "my_build_toolchain" : "stm32f4xx",
+    "my_build_chip" : "STM32F411xE",
+    "my_svd_name":  "STM32F411",
+
+    "cortex-debug.gdbPath": "${env:HOME}/opt/arm/gcc-arm-none-eabi-6/bin/arm-none-eabi-gdb",
+    
+    "makefile.configurations": [
+        {
+            "name": "Default",
+            "makeArgs": [
+                "all", 
+                "DEBUG=yes",
+                "TARGET_PATH=.build/debug",
+                "TARGET_CHIP=STM32F411xE",
+                "TARGET_TOOLCHAIN=stm32f4xx"
+            ]
+        }
+    ],
+    "files.associations": {
+        "apds9960.h": "c"
+    }
+}

@@ -77,6 +77,9 @@ void Error_Handler(void);
 #define Int_Pin GPIO_PIN_10
 #define Int_GPIO_Port GPIOB
 #define Int_EXTI_IRQn EXTI15_10_IRQn
+
+void MX_USART1_UART_Init(void);
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

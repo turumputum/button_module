@@ -25,7 +25,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define DEBUGPRINT 1
+#define DEBUGPRINT 0
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 extern I2C_HandleTypeDef hi2c1;
@@ -45,10 +45,15 @@ int gesture_motion_;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
+unsigned long i2cErrors = 0;
+
+
 uint8_t i2c1_read(uint8_t memAdr, uint8_t *regData, uint8_t lenght) {
 	if (HAL_I2C_Mem_Read(&hi2c1, sensorAdr, memAdr, 1, regData, lenght, HAL_MAX_DELAY) == HAL_OK) {
 		return lenght;
 	} else {
+
+		i2cErrors++;
 		return 0;
 	}
 }
@@ -57,6 +62,7 @@ uint8_t i2c1_write(uint8_t memAdr, uint8_t regData) {
 	if (HAL_I2C_Mem_Write(&hi2c1, sensorAdr, memAdr, 1, &regData, 1, HAL_MAX_DELAY) == HAL_OK) {
 		return 1;
 	} else {
+		i2cErrors++;
 		return 0;
 	}
 }
@@ -96,27 +102,19 @@ int apds9960init(void) {
 
 	/* Initialize I2C */
 
-	for (int i = 0; i < 255; i++) {
-		HAL_Delay(1);
-
-		if (HAL_I2C_IsDeviceReady(&hi2c1, i, 3, HAL_MAX_DELAY) == 0) {
-			sensorAdr = i;
-			printf("Sensor found on adress^ %d/%x\r\n", sensorAdr, (sensorAdr >> 1));
-			break;
-		}
-
-	}
+	sensorAdr = APDS9960_I2C_ADDR << 1;
 
 	/* Read ID register and check against known values for APDS-9960 */
 	if (i2c1_read(APDS9960_ID, &id, 1) == 0) {
-		printf("read sensor ID failed at %d\r\n", id);
+		printf("APDS-9960: read sensor ID failed at %d\r\n", id);
 		return 0;
-
 	}
 
 	if (!(id == APDS9960_ID_1 || id == APDS9960_ID_2 || id == APDS9960_ID_3)) {
 		return 0;
 	}
+	else
+		printf("APDS-9960: found at 0x%x\r\n", sensorAdr >> 1);
 
 	/* Set ENABLE register to 0 (disable all features) */
 	if (!setMode(ALL, OFF)) {
@@ -1402,3 +1400,4 @@ int apds9960ReadSensor(void) {
 /*******************************************************************************
  * End of file *
  *******************************************************************************/
+

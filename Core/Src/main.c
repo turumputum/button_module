@@ -84,8 +84,6 @@ int tempRight,tempLeft;
 PwmLed_HandleTypeDef Led_1;
 
 uint8_t *front;
-uint8_t gestureSensorReady;
-uint8_t gestureInteruptFlag = 0;
 uint8_t ledRefreshFlag = 0;
 uint32_t prevTick = 0;
 
@@ -146,11 +144,13 @@ ledRing_HandleTypeDef ledRing;
 
 uint16_t effectTick, effectLenght;
 
-int gesture, prevGesture;
-uint32_t gestureTik;
+int gesture = DIR_NONE;
+int prevGesture = DIR_NONE;
+//uint32_t gestureTik;
+uint32_t lastGesture = 0;
 uint16_t waTick;
 uint32_t HID_release_tick;
-uint8_t waFlag;
+//uint8_t waFlag;
 
 extern configuration config;
 
@@ -187,20 +187,16 @@ int calcSin(int tick, int lenght) {
 }
 
 //--------------------------------------------------------------------------------------------------
+/*
 int _write(int file, char *ptr, int len) {
-	/* Implement your write code here, this is used by puts and printf for example */
+	// Implement your write code here, this is used by puts and printf for example 
 	int i = 0;
 	for (i = 0; i < len; i++)
 		ITM_SendChar((*ptr++));
 	return len;
 }
-//--------------------------------------------------------------------------------------------------
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	/* EXTI line interrupt detected */
-	if ((GPIO_Pin == Int_Pin) && (gestureSensorReady == 1)) {
-		gestureInteruptFlag = 1;
-	}
-}
+*/
+
 //--------------------------------------------------------------------------------------------------
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
 	if (htim->Instance == TIM1) {
@@ -368,7 +364,7 @@ uint8_t processLedEffect(ledRing_HandleTypeDef *ledRing) {
 }
 //--------------------------------------------------------------------------------------------------
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-	//printf("period: %ld",HAL_GetTick()- prevTick);
+	
 	if (htim->Instance == TIM4) {
 
 		ledRefreshFlag = 1;
@@ -376,7 +372,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		waTick++;
 		if (waTick > 60) {
 			waTick = 0;
-			waFlag = 1;
+//			waFlag = 1;
 		}
 
 		if (((HAL_GetTick() - HID_release_tick) > 20) && (HID_release_tick != 0)) {
@@ -516,52 +512,53 @@ int main(void)
   MX_TIM2_Init();
   MX_I2C1_Init();
   MX_TIM4_Init();
-  MX_USB_OTG_FS_PCD_Init();
-  MX_FATFS_Init();
+//  MX_USB_OTG_FS_PCD_Init();
+//  MX_FATFS_Init();
+	MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 	//--------------------------------------------------------------------------------------------------
-	printf("Hello\r\n");
-	W25qxx_Init();
-	//W25qxx_EraseChip();
-	//res = f_mkfs("", FM_FAT, 4096, bb, _MAX_SS);
+	// printf("Hello\r\n");
+	// W25qxx_Init();
+	// //W25qxx_EraseChip();
+	// //res = f_mkfs("", FM_FAT, 4096, bb, _MAX_SS);
 
-	res = f_mount(&fs, "", 1);
-	if (res == FR_OK) {
-		printf("mount FS OK\r\n");
-	} else if (res == 13) {
-		res = f_mkfs("", FM_FAT, 4096, bb, _MAX_SS);
-		printf("Formst disk:  %d \r\n", res);
-	} else {
-		printf("mount Fail:  %d \r\n", res);
-	}
+	// res = f_mount(&fs, "", 1);
+	// if (res == FR_OK) {
+	// 	printf("mount FS OK\r\n");
+	// } else if (res == 13) {
+	// 	res = f_mkfs("", FM_FAT, 4096, bb, _MAX_SS);
+	// 	printf("Formst disk:  %d \r\n", res);
+	// } else {
+	// 	printf("mount Fail:  %d \r\n", res);
+	// }
 
 	set_default_config();
 
-	res = f_opendir(&dir, "/");
-	if (res == FR_OK) {
-		res = f_findfirst(&dir, &fno, fno.fname, "*.ini");
-		if (res == FR_OK && fno.fname[0]) {
-			printf("found file  %s \r\n", fno.fname);
-		} else {
-			write_default_config();
-		}
-	}
+	// res = f_opendir(&dir, "/");
+	// if (res == FR_OK) {
+	// 	res = f_findfirst(&dir, &fno, fno.fname, "*.ini");
+	// 	if (res == FR_OK && fno.fname[0]) {
+	// 		printf("found file  %s \r\n", fno.fname);
+	// 	} else {
+	// 		write_default_config();
+	// 	}
+	// }
 
-	res = ini_parse_fatfs("config.ini", configReader, &config);
-	if (res < 0) {
-		printf("Can't load 'config.ini', set default\n");
-		char error_string[100];
-		sprintf(error_string, "Fail read Config.ini, chek line %d", res);
-		writeErrorTxt(error_string);
-	}
+	// res = ini_parse_fatfs("config.ini", configReader, &config);
+	// if (res < 0) {
+	// 	printf("Can't load 'config.ini', set default\n");
+	// 	char error_string[100];
+	// 	sprintf(error_string, "Fail read Config.ini, chek line %d", res);
+	// 	writeErrorTxt(error_string);
+	// }
 
-	res = f_mount(NULL, "", 1);
-	if (res != FR_OK) {
-		printf("unMount FS fail: %d\r\n", res);
-	}
+	// res = f_mount(NULL, "", 1);
+	// if (res != FR_OK) {
+	// 	printf("unMount FS fail: %d\r\n", res);
+	// }
 	//--------------------------------------------------------------------------------------------------
 
-	MX_USB_DEVICE_Init();
+	//MX_USB_DEVICE_Init();
 
 	//--------------------------------------------------------------------------------------------------
 
@@ -570,18 +567,15 @@ int main(void)
 	} else {
 		printf("Something went wrong during APDS-9960 init!\r\n");
 		printf("Error!!! Re-Start Board\r\n");
-		gestureSensorReady = 0;
 		HAL_Delay(1000);
 		//NVIC_SystemReset();
 	}
 	// Start running the APDS-9960 gesture sensor engine
 	if (enableGestureSensor(1)) {
 		printf("Gesture sensor is now running\r\n");
-		gestureSensorReady = 1;
 	} else {
 		printf("Something went wrong during gesture sensor init!\r\n");
 		printf("Error!!! Re-Start Board\r\n");
-		gestureSensorReady = 0;
 		HAL_Delay(1000);
 		//NVIC_SystemReset();
 	}
@@ -606,70 +600,95 @@ int main(void)
 
 	HAL_TIM_Base_Start_IT(&htim4);
 	int effectLen = 90;
+
+	uint32_t lastShow = 0;
+	
 	//--------------------------------------------------------------------------------------------------
-	while (1) {
+	while (1) 
+	{
+		u_int32_t now = HAL_GetTick();
 
-		if (((gestureInteruptFlag == 1) ) && (ledRefreshFlag != 1)) {
-			gestureInteruptFlag = 0;
-
-			if (waFlag) {
-				waFlag = 0;
-			}
-
-			gestureTik = HAL_GetTick();
-
+		// overflow or 30 ms 
+		if ( (now < lastGesture) || ((now - lastGesture) >= 30))
+		{
 			prevGesture = gesture;
 			gesture = apds9960ReadSensor(); /* Read Gesture */
 			if (gesture != 0) {
 				printf("%ld: gesture is^ %d \r\n",HAL_GetTick(), gesture); /* Report to Serial Port(Debug Port) */
 			}
-			if (gesture == 4) {
-				if (config.vertical_swipe_enable == 1) {
-					testModeBright(-1);
-					setLedEffect(&ledRing, SWIPE_DOWN, effectLen);
-					CDC_report(DOWN_ARROW);
-					HID_keyboard_report(DOWN_ARROW);
 
-				}
-			} else if (gesture == 2) {
-				if (config.horizontal_swipe_enable == 1) {
-					setLedEffect(&ledRing, SWIPE_RIGHT, effectLen);
-					CDC_report(RIGHT_ARROW);
-					HID_keyboard_report(RIGHT_ARROW);
-					testModeColor(1);
-				}
-			} else if (gesture == 1) {
-
-				if (config.horizontal_swipe_enable == 1) {
-					setLedEffect(&ledRing, SWIPE_LEFT, effectLen);
-					CDC_report(LEFT_ARROW);
-					HID_keyboard_report(LEFT_ARROW);
-					testModeColor(-1);
-				}
-			} else if (gesture == 3) {
-
-				if (config.vertical_swipe_enable == 1) {
-					testModeBright(1);
-					setLedEffect(&ledRing, SWIPE_UP, effectLen);
-					CDC_report(UP_ARROW);
-					HID_keyboard_report(UP_ARROW);
-
-				}
-			}
+			lastGesture = now;
 		}
+
+		if (gesture != DIR_NONE)
+		{
+			switch (gesture)
+			{
+				case DIR_DOWN:
+					if (config.vertical_swipe_enable == 1) 
+					{
+						testModeBright(-1);
+						setLedEffect(&ledRing, SWIPE_DOWN, effectLen);
+//						CDC_report(DOWN_ARROW);
+//						HID_keyboard_report(DOWN_ARROW);
+					}
+					break;
+
+				case DIR_UP:
+					if (config.vertical_swipe_enable == 1) 
+					{
+						testModeBright(1);
+						setLedEffect(&ledRing, SWIPE_UP, effectLen);
+//						CDC_report(UP_ARROW);
+//						HID_keyboard_report(UP_ARROW);
+					}
+					break;
+
+				case DIR_RIGHT:
+					if (config.horizontal_swipe_enable == 1) 
+					{
+						setLedEffect(&ledRing, SWIPE_RIGHT, effectLen);
+//						CDC_report(RIGHT_ARROW);
+//						HID_keyboard_report(RIGHT_ARROW);
+						testModeColor(1);
+					}
+					break;
+				
+				case DIR_LEFT:
+					if (config.horizontal_swipe_enable == 1) 
+					{
+						setLedEffect(&ledRing, SWIPE_LEFT, effectLen);
+//						CDC_report(LEFT_ARROW);
+//						HID_keyboard_report(LEFT_ARROW);
+						testModeColor(-1);
+					}
+					break;
+				
+				default:
+					break;
+			}
+
+			gesture = DIR_NONE;
+		}
+
+// 		if ((now - lastShow) >= 1000)
+// 		{
+// extern unsigned long i2cErrors;
+
+// 			printf("i2cErrors = %d\n", i2cErrors);
+
+// 			lastShow = now;
+// 		}
+
 
 		if (ledRefreshFlag == 1) {
 			ledRefreshFlag = 0;
 			processLedEffect(&ledRing);
 		}
 
-		CDC_checkRecive();
+//		CDC_checkRecive();
 		HAL_Delay(1);
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
 	}
-  /* USER CODE END 3 */
 }
 
 /**

@@ -79,6 +79,8 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_usart.c \
 Drivers/w25q/w25qxx.c \
 Drivers/apds_9960/apds9960.c \
 Middlewares/Third_Party/FatFs/src/ff.c \
@@ -119,6 +121,8 @@ Core/Src/gpio.c \
 Core/Src/syscalls.c \
 Core/Src/stm32f4xx_hal_msp.c \
 Core/Src/usb_otg.c \
+Core/Src/usart.c \
+
 
 # ASM sources
 ASM_SOURCES =  \

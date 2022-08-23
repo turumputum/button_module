@@ -194,13 +194,13 @@
 
 /* Direction definitions */
 enum {
-  DIR_NONE,
-  DIR_LEFT,
-  DIR_RIGHT,
-  DIR_UP,
-  DIR_DOWN,
-  DIR_NEAR,
-  DIR_FAR,
+  DIR_NONE = 0,
+  DIR_LEFT = 1,
+  DIR_RIGHT = 2,
+  DIR_UP = 3,
+  DIR_DOWN = 4,
+  DIR_NEAR  = 5,
+  DIR_FAR   = 6,
   DIR_ALL,
   TAP
 };

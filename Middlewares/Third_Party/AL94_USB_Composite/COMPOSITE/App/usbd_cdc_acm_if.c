@@ -119,6 +119,8 @@ extern USBD_HandleTypeDef hUsbDevice;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 extern uint8_t CDC_reciveFlag;
+extern char usb_buff_rx[50];
+
 /* USER CODE END EXPORTED_VARIABLES */
 
 /**
@@ -422,8 +424,14 @@ static int8_t CDC_Receive(uint8_t cdc_ch, uint8_t *Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
   //HAL_UART_Transmit_DMA(CDC_CH_To_UART_Handle(cdc_ch), Buf, *Len);
- //CDC_Transmit(cdc_ch, Buf, *Len); // echo back on same channel
+  //CDC_Transmit(cdc_ch, Buf, *Len); // echo back on same channel
 	CDC_reciveFlag=1;
+
+		if(*Len<50){
+			//sprintf(usb_buff_rx,"%s", Buf);
+			strcpy(usb_buff_rx, (char *)Buf);
+		}
+
   USBD_CDC_SetRxBuffer(cdc_ch, &hUsbDevice, &Buf[0]);
   USBD_CDC_ReceivePacket(cdc_ch, &hUsbDevice);
   return (USBD_OK);

@@ -230,7 +230,7 @@ int8_t STORAGE_IsWriteProtected(uint8_t lun)
 int8_t STORAGE_Read(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 6 */
-	printf("%d || read  storage, blk adr:%d blk_len:%d \r\n", HAL_GetTick(),   blk_addr, blk_len);
+	//printf("%d || read  storage, blk adr:%d blk_len:%d \r\n", HAL_GetTick(),   blk_addr, blk_len);
 	W25qxx_ReadPage(buf, blk_addr * 2,0,0);
 	W25qxx_ReadPage(buf + 256, blk_addr * 2 + 1,0,0);
   return (USBD_OK);
@@ -253,7 +253,7 @@ int8_t STORAGE_Write(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_
 	uint16_t startPage = current_sector_addr * 16;
 	int offset = 512 * (blk_addr % 8);
 
-	printf("%d || write  storage, blk adr:%d blk_len:%d current_sector_addr:%d startPage:%d offset:%d \r\n", HAL_GetTick(),  blk_addr, blk_len, current_sector_addr, startPage, offset);
+	//printf("%d || write  storage, blk adr:%d blk_len:%d current_sector_addr:%d startPage:%d offset:%d \r\n", HAL_GetTick(),  blk_addr, blk_len, current_sector_addr, startPage, offset);
 
 	/*
 	for (uint16_t i = 0; i < 16; i++) {

@@ -42,6 +42,16 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+#define FADE_UP 1
+#define FADE_DOWN 2
+#define RUN 3
+#define SWIPE_UP 4
+#define SWIPE_DOWN 5
+#define SWIPE_LEFT 6
+#define SWIPE_RIGHT 7
+#define WAITING 8
+#define NOT_RECOGNIZED 9
+
 
 /* USER CODE END EC */
 
@@ -60,12 +70,10 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOC
-#define BTN_Pin GPIO_PIN_0
-#define BTN_GPIO_Port GPIOA
-#define IN1_Pin GPIO_PIN_1
-#define IN1_GPIO_Port GPIOA
-#define IN2_Pin GPIO_PIN_2
-#define IN2_GPIO_Port GPIOA
+#define LED_8_Pin GPIO_PIN_14
+#define LED_8_GPIO_Port GPIOC
+#define BT_8_Pin GPIO_PIN_15
+#define BT_8_GPIO_Port GPIOC
 #define CS_Pin GPIO_PIN_4
 #define CS_GPIO_Port GPIOA
 #define W_SCK_Pin GPIO_PIN_5
@@ -74,11 +82,41 @@ void Error_Handler(void);
 #define W_MISO_GPIO_Port GPIOA
 #define W_MOSI_Pin GPIO_PIN_7
 #define W_MOSI_GPIO_Port GPIOA
+#define W_CS_Pin GPIO_PIN_0
+#define W_CS_GPIO_Port GPIOB
+#define W_RST_Pin GPIO_PIN_1
+#define W_RST_GPIO_Port GPIOB
 #define Int_Pin GPIO_PIN_10
 #define Int_GPIO_Port GPIOB
 #define Int_EXTI_IRQn EXTI15_10_IRQn
-
-void MX_USART1_UART_Init(void);
+#define BT_1_Pin GPIO_PIN_12
+#define BT_1_GPIO_Port GPIOB
+#define LED_1_Pin GPIO_PIN_13
+#define LED_1_GPIO_Port GPIOB
+#define BT_2_Pin GPIO_PIN_14
+#define BT_2_GPIO_Port GPIOB
+#define LED_2_Pin GPIO_PIN_15
+#define LED_2_GPIO_Port GPIOB
+#define BT_3_Pin GPIO_PIN_8
+#define BT_3_GPIO_Port GPIOA
+#define LED_3_Pin GPIO_PIN_9
+#define LED_3_GPIO_Port GPIOA
+#define BT_4_Pin GPIO_PIN_10
+#define BT_4_GPIO_Port GPIOA
+#define LED_4_Pin GPIO_PIN_15
+#define LED_4_GPIO_Port GPIOA
+#define BT_5_Pin GPIO_PIN_4
+#define BT_5_GPIO_Port GPIOB
+#define LED_5_Pin GPIO_PIN_5
+#define LED_5_GPIO_Port GPIOB
+#define BT_6_Pin GPIO_PIN_6
+#define BT_6_GPIO_Port GPIOB
+#define LED_6_Pin GPIO_PIN_7
+#define LED_6_GPIO_Port GPIOB
+#define BT_7_Pin GPIO_PIN_8
+#define BT_7_GPIO_Port GPIOB
+#define LED_7_Pin GPIO_PIN_9
+#define LED_7_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

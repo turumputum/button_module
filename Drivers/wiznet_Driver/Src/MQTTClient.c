@@ -16,6 +16,7 @@
 #include "../Inc/MQTTClient.h"
 #include <string.h>
 
+extern char mqttID[50];
 int mes_id;
 
 #define sizeOfBuff 4096
@@ -488,7 +489,6 @@ int MQTT_startUp(Client *c, Network *n, uint8_t *ip, uint8_t sock, char *name) {
 
 	NewNetwork(n);
 	n->my_socket = sock;
-	int numRet=0;
 
 	if(ConnectNetwork(n, ip, 1883)<0){
 		return FAILURE;
@@ -498,7 +498,7 @@ int MQTT_startUp(Client *c, Network *n, uint8_t *ip, uint8_t sock, char *name) {
 
 	data.willFlag = 0;
 	data.MQTTVersion = 4;	//3;
-	data.clientID.cstring = name;
+	data.clientID.cstring = mqttID;
 	//data.username.cstring = "username";
 	//data.password.cstring = "";
 	data.keepAliveInterval = 120;
@@ -523,11 +523,11 @@ int mqtt_publish(Client *c,char* topic, char* payload) {
 
 
 	MQTTMessage pubMessage;
-	pubMessage.qos = QOS1;
-	pubMessage.retained = 1;
+	pubMessage.qos = QOS0;
+	pubMessage.retained = 0;
 	pubMessage.id = mes_id++;
 	int8_t len;
-	len = strlen(payload);
+	len = strlen(payload)+5;
 	pubMessage.payloadlen = len;
 	pubMessage.payload = payload;
 

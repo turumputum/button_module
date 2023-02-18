@@ -6,7 +6,7 @@
     "my_build_chip" : "STM32F411xE",
     "my_svd_name":  "STM32F411",
 
-    "cortex-debug.gdbPath": "${env:HOME}/opt/arm/gcc-arm-none-eabi-6/bin/arm-none-eabi-gdb",
+    "cortex-debug.gdbPath": "${env:HOME}/opt/arm/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb",
     
     "makefile.configurations": [
         {
